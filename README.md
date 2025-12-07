@@ -1,5 +1,4 @@
 # K-Parche
-Página del podcast colombiano para parchar...
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -81,30 +80,67 @@ Página del podcast colombiano para parchar...
     </div>
 
     <script>
-        function uploadAudio() {
-            const input = document.getElementById('audioInput');
-            const list = document.getElementById('audioList');
+    const audioList = document.getElementById('audioList');
+    const audioKey = "audiosPodcast";
 
-            if (input.files.length === 0) {
-                alert('Por favor selecciona un archivo de audio.');
-                return;
-            }
+    // Cargar audios guardados
+    window.onload = function () {
+        const savedAudios = JSON.parse(localStorage.getItem(audioKey)) || [];
+        savedAudios.forEach(audio => addAudioToList(name, url) {
+        const item = document.createElement('div');
+        item.className = 'audio-item';
+        item.innerHTML = `
+            <p><strong>${name}</strong></p>
+            <audio controls src="${url}"></audio>
+            <button class="delete-btn">Eliminar</button>
+        `;
 
-            const file = input.files[0];
-            const url = URL.createObjectURL(file);
+        item.querySelector('.delete-btn').addEventListener('click', () => {
+            deleteAudio(name, url);
+            item.remove();
+        });
 
-            const item = document.createElement('div');
-            item.className = 'audio-item';
-            item.innerHTML = `
-                <p><strong>${file.name}</strong></p>
-                <audio controls src="${url}"></audio>
-            `;
+        audioList.appendChild(item);
+    }
 
-            list.appendChild(item);
+    function uploadAudio() {
+        const input = document.getElementById('audioInput');
 
-            input.value = "";
+        if (input.files.length === 0) {
+            alert('Por favor selecciona un archivo de audio.');
+            return;
         }
-    </script>
+
+        const file = input.files[0];
+        const url = URL.createObjectURL(file);
+
+        addAudioToList(file.name, url);
+        saveAudio(file.name, url);
+
+        input.value = "";
+    }
+
+    function addAudioToList(name, url) {
+        const item = document.createElement('div');
+        item.className = 'audio-item';
+        item.innerHTML = `
+            <p><strong>${name}</strong></p>
+            <audio controls src="${url}"></audio>
+        `;
+        audioList.appendChild(item);
+    }
+
+    function saveAudio(name, url) {(name, url) {
+        const savedAudios = JSON.parse(localStorage.getItem(audioKey)) || [];
+        savedAudios.push({ name, url });
+        localStorage.setItem(audioKey, JSON.stringify(savedAudios));
+    }
+    function deleteAudio(name, url) {
+        let savedAudios = JSON.parse(localStorage.getItem(audioKey)) || [];
+        savedAudios = savedAudios.filter(a => !(a.name === name && a.url === url));
+        localStorage.setItem(audioKey, JSON.stringify(savedAudios));
+    }
+</script>
 </body>
 </html>
 
